@@ -1,0 +1,58 @@
+<html>
+
+<body>
+    <form id="name_form">
+        <label>Nome</label><input type="text" name="nome" />
+        <br />
+        <label>Time</label><input type="text" name="time" />
+        <br />
+        <label>Posição</label>
+            <select id="Combo">
+                <option disabled selected></option>
+                <option value=levantador>levantador</option>
+                <option value=libero>líbero</option>
+            </select>
+        <input type="submit" value="submit" />
+    </form>
+    <input type="text" id="resp" name="resp" />
+
+    <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+    <script type="text/javascript">
+        $('#name_form').submit(function (e) {
+            e.preventDefault();
+            if ($('[name=nome]').val() == '') {
+                $('#resp').val('Preencher o Nome');
+            } else if ($('[name=time]').val() == '') {
+                $('#resp').val('Preencher o Time');
+            } else if ($('#Combo option:selected').text() == '') {
+                $('#resp').val('Preencher a posição');
+            } else {
+
+                var formobj = {
+                    nome: $('[name=nome]').val(),
+                    time: $('[name=time]').val(),
+                    combo: $('#Combo option:selected').val(),
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/say_name5',
+                    dataType: 'json',
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify(formobj),
+                    success: function (callback) {
+                        console.log(callback);
+                        $('#resp').val("respondeu:" + callback.nome + ' ' + callback.time + ' ' + callback.value);
+                        $("#name_form")[0].reset();
+
+                    },
+                    error: function () {
+                        $(this).html("error!");
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
